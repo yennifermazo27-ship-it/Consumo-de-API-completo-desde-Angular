@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="header">
+    <h2>Lista de Tickets</h2>
+    <div class="acciones">
+      <a *ngIf="canCreate" routerLink="/tickets/new" class="btn-crear">+ Crear Ticket</a>
+      <a *ngIf="isAdmin" routerLink="/users" class="btn-usuarios">Gestión de usuarios</a>
+      <button class="btn-salir" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="filtros">
+    <select *ngIf="isAgent" [(ngModel)]="agentView" (ngModelChange)="onAgentViewChange($event)">
+      <option value="mine">Asignados a mí</option>
+      <option value="unassigned">Sin asignar</option>
+    </select>
+
+    <select [(ngModel)]="filters.status" (ngModelChange)="onFilterChange()">
+      <option [ngValue]="undefined">Todos los estados</option>
+      <option *ngFor="let s of statuses" [value]="s">{{ statusLabel(s) }}</option>
+    </select>
+
+    <select [(ngModel)]="filters.priority" (ngModelChange)="onFilterChange()">
+      <option [ngValue]="undefined">Todas las prioridades</option>
+      <option *ngFor="let p of priorities" [value]="p">{{ priorityLabel(p) }}</option>
+    </select>
+  </div>
+
+  <p *ngIf="loading">Cargando tickets...</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div class="tickets" *ngIf="!loading && tickets.length">
+    <div class="ticket" *ngFor="let t of tickets">
+      <h3>{{ t.title }}</h3>
+      <p>{{ t.description }}</p>
+
+      <div class="info">
+        <span class="estado" [ngClass]="t.status">{{ statusLabel(t.status) }}</span>
+        <span class="prioridad" [ngClass]="t.priority">{{ priorityLabel(t.priority) }}</span>
+      </div>
+
+      <div class="botones">
+        <a [routerLink]="['/tickets', t.id]" class="btn-ver">Ver detalle</a>
+        <a *ngIf="isAdmin || (isAgent && t.agentId === authService.currentUser?.id)" [routerLink]="['/tickets', t.id, 'edit']" class="btn-editar">Editar</a>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && !tickets.length">No hay tickets para mostrar.</p>
+
+  <div class="paginacion" *ngIf="total > (filters.limit || 10)">
+    <button (click)="goToPage((filters.page || 1) - 1)" [disabled]="(filters.page || 1) <= 1">Anterior</button>
+    <span>Página {{ filters.page }}</span>
+    <button (click)="goToPage((filters.page || 1) + 1)">Siguiente</button>
+  </div>
+</div>

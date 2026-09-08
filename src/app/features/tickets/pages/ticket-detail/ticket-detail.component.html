@@ -1,0 +1,57 @@
+<div class="container" *ngIf="ticket">
+  <a routerLink="/tickets" class="volver">&larr; Volver</a>
+
+  <div class="card">
+    <h2>{{ ticket.title }}</h2>
+    <p class="descripcion">{{ ticket.description }}</p>
+
+    <div class="info">
+      <span class="estado" [ngClass]="ticket.status">{{ ticket.status }}</span>
+      <span class="prioridad" [ngClass]="ticket.priority">{{ ticket.priority }}</span>
+    </div>
+
+    <div class="assign-box" *ngIf="isAdmin">
+      <h3>Asignar agente</h3>
+      <div class="assign-row">
+        <select [(ngModel)]="selectedAgentId">
+          <option value="">Sin asignar</option>
+          <option *ngFor="let a of agents" [value]="a.id">{{ a.name }}</option>
+        </select>
+        <button class="btn-primary" (click)="assignAgent()" [disabled]="!selectedAgentId">Asignar</button>
+      </div>
+      <p class="feedback" [class.feedback-error]="assignFeedbackIsError" *ngIf="assignFeedback">
+        {{ assignFeedback }}
+      </p>
+    </div>
+
+    <div class="acciones" *ngIf="canEdit || isAdmin">
+      <button *ngIf="canEdit" class="btn-editar-ticket" (click)="goToEdit()">Editar ticket</button>
+      <button *ngIf="isAdmin" class="btn-eliminar-ticket" (click)="deleteTicket()" [disabled]="deleting">
+        {{ deleting ? 'Eliminando...' : 'Eliminar ticket' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Comentarios</h3>
+    <ul class="comentarios">
+      <li *ngFor="let c of comments">
+        <strong>{{ c.authorName || (c.authorId === authService.currentUser?.id ? authService.currentUser?.name : 'Usuario') }}</strong>
+        <p>{{ c.message }}</p>
+        <span class="fecha-comentario">{{ c.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+      </li>
+      <li *ngIf="!comments.length" class="sin-comentarios">Aún no hay comentarios.</li>
+    </ul>
+
+    <div class="nuevo-comentario">
+      <textarea [(ngModel)]="newComment" placeholder="Escribe un comentario..."></textarea>
+      <button class="btn-primary" (click)="addComment()" [disabled]="!newComment.trim()">Comentar</button>
+      <p class="feedback" [class.feedback-error]="commentFeedbackIsError" *ngIf="commentFeedback">
+        {{ commentFeedback }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<p *ngIf="loading">Cargando...</p>
+<p class="error" *ngIf="!ticket && errorMessage">{{ errorMessage }}</p>

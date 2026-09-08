@@ -1,0 +1,31 @@
+<div class="auth-page">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Crear cuenta</h2>
+
+    <label>
+      Nombre
+      <input type="text" formControlName="name" />
+    </label>
+
+    <label>
+      Correo
+      <input type="email" formControlName="email" />
+    </label>
+
+    <label>
+      Contraseña
+      <input type="password" formControlName="password" />
+    </label>
+    <small class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+      Mínimo 6 caracteres.
+    </small>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="submit" class="btn-primary" [disabled]="loading">
+      {{ loading ? 'Creando cuenta...' : 'Registrarme' }}
+    </button>
+
+    <p class="switch">¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a></p>
+  </form>
+</div>

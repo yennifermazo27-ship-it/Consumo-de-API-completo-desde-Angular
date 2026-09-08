@@ -1,0 +1,41 @@
+<div class="container">
+  <h2>{{ isEdit ? 'Editar ticket' : 'Nuevo ticket' }}</h2>
+
+  <div class="readonly-context" *ngIf="isEdit && isAgent && ticket">
+    <p><strong>Título:</strong> {{ ticket.title }}</p>
+    <p><strong>Descripción:</strong> {{ ticket.description }}</p>
+    <p><strong>Prioridad:</strong> {{ ticket.priority }}</p>
+  </div>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+    <label *ngIf="form.get('title')">
+      Título
+      <input type="text" formControlName="title" />
+    </label>
+
+    <label *ngIf="form.get('description')">
+      Descripción
+      <textarea formControlName="description"></textarea>
+    </label>
+
+    <label *ngIf="form.get('priority')">
+      Prioridad
+      <select formControlName="priority">
+        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+      </select>
+    </label>
+
+    <label *ngIf="form.get('status')">
+      Estado
+      <select formControlName="status">
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </label>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="submit" class="btn-primary" [disabled]="loading">
+      {{ loading ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </form>
+</div>

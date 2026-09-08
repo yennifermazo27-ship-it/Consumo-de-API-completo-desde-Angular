@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="header">
+    <h2>Usuarios</h2>
+    <a routerLink="/tickets" class="btn-volver">&larr; Volver a tickets</a>
+  </div>
+
+  <p *ngIf="loading">Cargando...</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div class="card" *ngIf="!loading && users.length">
+    <table>
+      <thead>
+        <tr><th>Nombre</th><th>Correo</th><th>Rol</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td>
+            <select [ngModel]="u.role" (ngModelChange)="changeRole(u, $event)">
+              <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="home">
+  <h1>Mesa de ayuda</h1>
+
+  <ng-container *ngIf="authService.currentUser as user; else guest">
+    <p>Hola, {{ user.name }} <span class="rol-badge">{{ user.role }}</span></p>
+    <nav>
+      <a routerLink="/tickets" class="btn-primary">Ir a Tickets</a>
+      <a *ngIf="authService.hasRole('admin')" routerLink="/users" class="btn-usuarios">Usuarios</a>
+      <button class="btn-salir" (click)="logout()">Cerrar sesión</button>
+    </nav>
+  </ng-container>
+
+  <ng-template #guest>
+    <p>Sistema de gestión de incidencias de soporte técnico.</p>
+    <nav>
+      <a routerLink="/auth/login" class="btn-primary">Iniciar sesión</a>
+      <a routerLink="/auth/register" class="btn-usuarios">Registrarme</a>
+    </nav>
+  </ng-template>
+</div>
