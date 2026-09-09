@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://sla-api.alejogiraldo.dev/api/$1"
+    }
+  ]
+}
